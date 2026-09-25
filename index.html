@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eymen Troll</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff; /* Arkası tamamen beyaz */
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Başla Butonu Kutusu */
+        #baslaBtn {
+            background-color: #000000; /* Siyah kutu */
+            color: #ffffff;
+            border: none;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 9999;
+            transition: transform 0.1s;
+        }
+
+        #baslaBtn:active {
+            transform: scale(0.95);
+        }
+
+        /* Ekranda uçuşacak resimlerin stili */
+        .ucan-resim {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #ff0000;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <button id="baslaBtn" onclick="sakayiBaslat()">BAŞLA</button>
+
+    <!-- Ses Dosyası -->
+    <audio id="tikiSes" src="tiki.mp3" preload="auto" loop></audio>
+
+    <script>
+        function sakayiBaslat() {
+            // Sesi başlat
+            var ses = document.getElementById("tikiSes");
+            ses.play().catch(e => console.log("Ses oynatılamadı"));
+
+            // Başla butonunu gizle
+            document.getElementById("baslaBtn").style.display = 'none';
+
+            // Ekranda sürekli resim üret ve uçur (40 milisaniyede bir tane fırlatır)
+            setInterval(resimUret, 40);
+        }
+
+        function resimUret() {
+            const img = document.createElement('img');
+            img.src = 'eymen.jpg';
+            img.className = 'ucan-resim';
+
+            // Rastgele başlangıç pozisyonu (ekranın ortalarından)
+            let posX = window.innerWidth / 2 - 50;
+            let posY = window.innerHeight / 2 - 50;
+            
+            img.style.left = posX + 'px';
+            img.style.top = posY + 'px';
+
+            document.body.appendChild(img);
+
+            // Rastgele hareket yönü ve hızı (karmakarışık uçuş için)
+            let hizX = (Math.random() - 0.5) * 20;
+            let hizY = (Math.random() - 0.5) * 20;
+
+            function hareketEt() {
+                posX += hizX;
+                posY += hizY;
+
+                // Ekran duvarlarından sekme efekti
+                if (posX <= 0 || posX >= window.innerWidth - 100) hizX *= -1;
+                if (posY <= 0 || posY >= window.innerHeight - 100) hizY *= -1;
+
+                img.style.left = posX + 'px';
+                img.style.top = posY + 'px';
+
+                requestAnimationFrame(hareketEt);
+            }
+
+            requestAnimationFrame(hareketEt);
+        }
+    </script>
+
+</body>
+</html>
